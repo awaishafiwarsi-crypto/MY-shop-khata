@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>My Shop Khata</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My Shop Khata">
+<meta name="theme-color" content="#123F2D">
+<meta name="application-name" content="My Shop Khata">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+:root{
+  --bg:#EEF2ED; --card:#FFFFFF; --ink:#1F2A24; --ink-soft:#5B6960;
+  --line:#DCE3DC; --green:#1B5E42; --green-dark:#123F2D; --gold:#C08A1E;
+  --red:#B3261E; --red-soft:#F6E4E2; --green-soft:#E3EEE7; --shadow:0 2px 10px rgba(20,40,30,.08);
+  --radius:16px;
+}
+[data-theme="dark"]{
+  --bg:#0E1512; --card:#172520; --ink:#E7EFE9; --ink-soft:#93A69B;
+  --line:#28382F; --green:#4CAF7D; --green-dark:#3A8F65; --gold:#E0B24C;
+  --red:#E5766C; --red-soft:#2A1917; --green-soft:#173427; --shadow:0 2px 14px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--ink);}
+body{font-family:'Inter',sans-serif;}
+body[dir="rtl"]{font-family:'Noto Naskh Arabic','Inter',sans-serif;}
+.disp{font-family:'Lora',serif;}
+[dir="rtl"] .disp{font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif;}
+#app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;display:flex;flex-direction:column;
+  background-image:repeating-linear-gradient(to bottom, transparent, transparent 27px, var(--line) 28px);
+}
+.screen{flex:1;padding:16px 16px 90px;overflow-y:auto;}
+.topbar{position:sticky;top:0;z-index:5;background:var(--green-dark);color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.topbar h1{font-size:19px;margin:0;font-weight:700;}
+.topbar .sub{font-size:12px;opacity:.8;margin-top:2px;}
+.iconbtn{background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:10px;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px;border:1px solid var(--line);}
+.balance-card{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;border-radius:20px;padding:22px 20px;margin:14px 0;position:relative;overflow:hidden;
+  background-image:linear-gradient(135deg,var(--green),var(--green-dark)), repeating-linear-gradient(90deg, transparent, transparent 9px, rgba(255,255,255,.14) 10px);
+  border:2px dashed rgba(255,255,255,.35);
+}
+.coin{position:absolute;top:14px;inset-inline-end:16px;width:38px;height:38px;border-radius:50%;background:var(--gold);color:#3a2a05;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;box-shadow:0 2px 6px rgba(0,0,0,.25);}
+.balance-label{font-size:13px;opacity:.85;}
+.balance-amt{font-family:'Lora',serif;font-size:34px;font-weight:700;margin-top:4px;letter-spacing:.3px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
+.stat{background:var(--card);border-radius:12px;padding:10px 8px;text-align:center;border:1px solid var(--line);}
+.stat .lbl{font-size:11px;color:var(--ink-soft);}
+.stat .val{font-weight:700;font-size:14px;margin-top:2px;}
+.up{color:var(--green);} .down{color:var(--red);}
+.qbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.qbtn{border:none;border-radius:14px;padding:16px 10px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.qbtn.income{background:var(--green);} .qbtn.expense{background:var(--red);}
+.section-title{font-weight:700;font-size:14px;margin:18px 0 8px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;}
+.bottomnav{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;max-width:480px;margin:0 auto;width:100%;z-index:6;}
+.navbtn{flex:1;border:none;background:none;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink-soft);font-size:11px;cursor:pointer;}
+.navbtn .ic{font-size:19px;}
+.navbtn.active{color:var(--green);font-weight:700;}
+.field{margin-bottom:13px;}
+.field label{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:5px;font-weight:600;}
+.field input,.field select,.field textarea{width:100%;padding:11px 12px;border-radius:11px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-size:15px;font-family:inherit;}
+.field textarea{resize:vertical;min-height:60px;}
+.toggle2{display:flex;background:var(--bg);border-radius:12px;padding:4px;border:1px solid var(--line);margin-bottom:14px;}
+.toggle2 button{flex:1;padding:10px;border:none;background:none;border-radius:9px;font-weight:700;cursor:pointer;color:var(--ink-soft);font-size:14px;}
+.toggle2 button.active.inc{background:var(--green);color:#fff;}
+.toggle2 button.active.exp{background:var(--red);color:#fff;}
+.btn{width:100%;padding:14px;border:none;border-radius:13px;background:var(--green);color:#fff;font-weight:700;font-size:15px;cursor:pointer;}
+.btn.danger{background:var(--red);}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink);}
+.btn.small{width:auto;padding:8px 14px;font-size:13px;border-radius:10px;}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.list-item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;font-size:15px;}
+.person-row{display:flex;align-items:center;gap:10px;}
+.p-name{font-weight:700;font-size:14.5px;}
+.p-sub{font-size:11.5px;color:var(--ink-soft);}
+.amt-pos{color:var(--green);font-weight:700;}
+.amt-neg{color:var(--red);font-weight:700;}
+.txn-item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px;margin-bottom:9px;}
+.txn-top{display:flex;justify-content:space-between;align-items:center;}
+.txn-meta{font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
+.chip{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;background:var(--green-soft);color:var(--green);margin-inline-end:5px;}
+.chip.exp{background:var(--red-soft);color:var(--red);}
+.filters{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.filter-chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--line);background:var(--card);font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;color:var(--ink-soft);}
+.filter-chip.active{background:var(--green);border-color:var(--green);color:#fff;}
+.searchbar{display:flex;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;margin-bottom:12px;gap:8px;}
+.searchbar input{border:none;background:none;outline:none;flex:1;font-size:14px;color:var(--ink);font-family:inherit;}
+.fab{position:fixed;bottom:80px;inset-inline-end:calc(50% - 240px + 20px);width:54px;height:54px;border-radius:50%;background:var(--green);color:#fff;border:none;font-size:26px;box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer;z-index:7;}
+@media(max-width:520px){.fab{inset-inline-end:20px;}}
+.empty{text-align:center;padding:40px 20px;color:var(--ink-soft);}
+.empty .ic{font-size:38px;margin-bottom:8px;}
+.modal-bg{position:fixed;inset:0;background:rgba(10,20,15,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20;}
+.modal{background:var(--card);width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px;max-height:85vh;overflow-y:auto;}
+.modal h3{margin-top:0;}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--green-dark);color:#fff;padding:12px 20px;border-radius:30px;font-size:13.5px;font-weight:600;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 4px;border-bottom:1px solid var(--line);}
+.settings-row:last-child{border-bottom:none;}
+.settings-row .lbl{font-weight:600;font-size:14.5px;}
+.settings-row .val{font-size:12.5px;color:var(--ink-soft);}
+.switch{width:44px;height:25px;border-radius:20px;background:var(--line);position:relative;cursor:pointer;flex-shrink:0;}
+.switch.on{background:var(--green);}
+.switch .knob{position:absolute;top:2px;left:2px;width:21px;height:21px;background:#fff;border-radius:50%;transition:.15s;}
+[dir="rtl"] .switch .knob{left:auto;right:2px;}
+.switch.on .knob{left:21px;}
+[dir="rtl"] .switch.on .knob{right:21px;left:auto;}
+.pin-dots{display:flex;justify-content:center;gap:14px;margin:30px 0;}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--green);}
+.pin-dot.filled{background:var(--green);}
+.pinpad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:280px;margin:0 auto;}
+.pinpad button{padding:18px;border-radius:16px;border:1px solid var(--line);background:var(--card);font-size:20px;font-weight:700;color:var(--ink);cursor:pointer;}
+.center-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:30px;text-align:center;}
+.logo-badge{width:80px;height:80px;border-radius:24px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:16px;box-shadow:var(--shadow);}
+.report-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px;}
+.report-row:last-child{border-bottom:none;}
+.report-row.total{font-weight:800;font-size:15.5px;padding-top:12px;}
+.bar-wrap{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12.5px;}
+.bar-track{flex:1;height:10px;background:var(--bg);border-radius:6px;overflow:hidden;border:1px solid var(--line);}
+.bar-fill{height:100%;border-radius:6px;}
+.menu-item{display:flex;align-items:center;gap:12px;padding:14px 6px;border-bottom:1px solid var(--line);cursor:pointer;}
+.menu-item:last-child{border-bottom:none;}
+.menu-ic{width:36px;height:36px;border-radius:10px;background:var(--green-soft);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+select.lang-select{padding:8px 10px;border-radius:9px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;font-size:12.5px;}
+.back-row{display:flex;align-items:center;gap:10px;}
+.iconbtn.light{background:rgba(0,0,0,.05);color:var(--ink);}
+[data-theme="dark"] .iconbtn.light{background:rgba(255,255,255,.08);color:var(--ink);}
+::placeholder{color:var(--ink-soft);opacity:.7;}
+#print-area{display:none;}
+body.printing #app{display:none;}
+body.printing #print-area{display:block;padding:20px;color:#000;background:#fff;}
+@media print{
+  #app{display:none !important;}
+  #print-area{display:block !important;padding:20px;color:#000;background:#fff;}
+}
+</style>
+</head>
+<body dir="rtl">
+<div id="app"><div class="center-screen"><div class="logo-badge">₨</div><div>Loading…</div></div></div>
+
+<script>
+/* ===================== Storage shim (works both inside Claude artifacts and as a standalone file) ===================== */
+if(!window.storage){
+  let memStore = {};
+  let useMem = false;
+  try{ localStorage.setItem('kh__test','1'); localStorage.removeItem('kh__test'); }catch(e){ useMem = true; }
+  window.storage = {
+    async get(key){
+      const v = useMem ? (Object.prototype.hasOwnProperty.call(memStore,key)?memStore[key]:null) : localStorage.getItem('kh__'+key);
+      if(v===null || v===undefined) throw new Error('not found');
+      return {key,value:v,shared:false};
+    },
+    async set(key,value){ if(useMem) memStore[key]=value; else localStorage.setItem('kh__'+key, value); return {key,value,shared:false}; },
+    async delete(key){ if(useMem) delete memStore[key]; else localStorage.removeItem('kh__'+key); return {key,deleted:true,shared:false}; },
+    async list(prefix){
+      const keys = useMem ? Object.keys(memStore).filter(k=>!prefix||k.startsWith(prefix)) : Object.keys(localStorage).filter(k=>k.startsWith('kh__'+(prefix||''))).map(k=>k.slice(4));
+      return {keys,shared:false};
+    },
+  };
+}
+window.addEventListener('error', function(e){
+  const app = document.getElementById('app');
+  if(app && !state.loaded){
+    app.innerHTML = '<div class="center-screen"><div class="logo-badge">!</div><h3>Something went wrong loading the app</h3><div style="color:var(--ink-soft);font-size:12px;word-break:break-all;">'+(e.message||'')+'</div></div>';
+  }
+});
+
+/* ===================== i18n ===================== */
+const I18N = {
+ appName:{ur:'میری دکان کا کھاتہ',en:'My Shop Khata'},
+ dashboard:{ur:'ڈیش بورڈ',en:'Dashboard'},
+ transactions:{ur:'لین دین',en:'Transactions'},
+ people:{ur:'کھاتے',en:'People'},
+ reports:{ur:'رپورٹس',en:'Reports'},
+ settings:{ur:'سیٹنگز',en:'Settings'},
+ currentBalance:{ur:'موجودہ بیلنس',en:'Current Balance'},
+ todayIncome:{ur:'آج کی آمد',en:"Today's Income"},
+ todayExpense:{ur:'آج کا خرچ',en:"Today's Expense"},
+ todayNet:{ur:'آج کا خالص',en:"Today's Net"},
+ thisMonth:{ur:'اس ماہ',en:'This Month'},
+ income:{ur:'آمدرقم',en:'Income'},
+ expense:{ur:'خرچ',en:'Expense'},
+ net:{ur:'خالص',en:'Net'},
+ addIncome:{ur:'آمد شامل کریں',en:'Add Income'},
+ addExpense:{ur:'خرچ شامل کریں',en:'Add Expense'},
+ amount:{ur:'رقم',en:'Amount'},
+ person:{ur:'نام / کاہک',en:'Person'},
+ category:{ur:'زمرہ',en:'Category'},
+ description:{ur:'تفصیل',en:'Description'},
+ date:{ur:'تاریخ',en:'Date'},
+ time:{ur:'وقت',en:'Time'},
+ paymentMethod:{ur:'ادائیگی کا طریقہ',en:'Payment Method'},
+ cash:{ur:'کیش',en:'Cash'}, bank:{ur:'بینک',en:'Bank'}, other:{ur:'دیگر',en:'Other'},
+ save:{ur:'محفوظ کریں',en:'Save'},
+ cancel:{ur:'منسوخ',en:'Cancel'},
+ selectPerson:{ur:'کاہک منتخب کریں',en:'Select person'},
+ addNewPerson:{ur:'+ نیا نام شامل کریں',en:'+ Add new person'},
+ noPerson:{ur:'کوئی نہیں / نقد لین دین',en:'None / Cash only'},
+ addPerson:{ur:'نیا نام شامل کریں',en:'Add Person'},
+ name:{ur:'نام',en:'Name'},
+ phone:{ur:'فون نمبر',en:'Phone Number'},
+ address:{ur:'پتہ',en:'Address'},
+ notes:{ur:'نوٹس',en:'Notes'},
+ openingBalance:{ur:'اوپننگ بیلنس',en:'Opening Balance'},
+ balance:{ur:'بیلنس',en:'Balance'},
+ totalReceived:{ur:'کل وصولی',en:'Total Received'},
+ totalPaid:{ur:'کل ادائیگی',en:'Total Paid'},
+ all:{ur:'تمام',en:'All'},
+ search:{ur:'تلاش کریں',en:'Search'},
+ searchPh:{ur:'نام، رقم یا تفصیل تلاش کریں',en:'Search name, amount, description'},
+ noData:{ur:'ابھی کوئی ریکارڈ موجود نہیں',en:'No records yet'},
+ dailyReport:{ur:'روزانہ رپورٹ',en:'Daily Report'},
+ monthlyReport:{ur:'ماہانہ رپورٹ',en:'Monthly Report'},
+ personReport:{ur:'نام کے حساب سے رپورٹ',en:'Person-wise Report'},
+ categories:{ur:'زمرہ جات',en:'Categories'},
+ backup:{ur:'بیک اپ اور ریسٹور',en:'Backup & Restore'},
+ security:{ur:'سیکیورٹی',en:'Security'},
+ shopProfile:{ur:'دکان کی پروفائل',en:'Shop Profile'},
+ language:{ur:'زبان',en:'Language'},
+ darkMode:{ur:'ڈارک موڈ',en:'Dark Mode'},
+ appLock:{ur:'ایپ لاک (PIN)',en:'App Lock (PIN)'},
+ currency:{ur:'کرنسی',en:'Currency'},
+ shopName:{ur:'دکان کا نام',en:'Shop Name'},
+ ownerName:{ur:'مالک کا نام',en:'Owner Name'},
+ createBackup:{ur:'بیک اپ بنائیں',en:'Create Backup'},
+ restoreBackup:{ur:'بیک اپ ریسٹور کریں',en:'Restore Backup'},
+ exportCsv:{ur:'CSV ایکسپورٹ کریں',en:'Export CSV'},
+ exportPdf:{ur:'PDF رپورٹ',en:'PDF Report'},
+ delete:{ur:'حذف کریں',en:'Delete'},
+ edit:{ur:'ترمیم',en:'Edit'},
+ confirmDelete:{ur:'کیا آپ واقعی یہ ریکارڈ حذف کرنا چاہتے ہیں؟',en:'Are you sure you want to delete this record?'},
+ confirmRestore:{ur:'موجودہ ڈیٹا تبدیل ہو سکتا ہے۔ کیا آپ جاری رکھنا چاہتے ہیں؟',en:'Existing data may be overwritten. Continue?'},
+ savedMsg:{ur:'ریکارڈ کامیابی سے محفوظ ہو گیا۔',en:'Saved successfully.'},
+ deletedMsg:{ur:'ریکارڈ حذف کر دیا گیا۔',en:'Record deleted.'},
+ welcomeTitle:{ur:'میری دکان کھاتہ میں خوش آمدید',en:'Welcome to My Shop Khata'},
+ welcomeSub:{ur:'شروع کرنے کے لیے اپنی دکان کی معلومات درج کریں',en:'Enter your shop details to get started'},
+ getStarted:{ur:'شروع کریں',en:'Get Started'},
+ setupPin:{ur:'اپنا 4 ہندسوں کا PIN بنائیں',en:'Set a 4-digit PIN'},
+ confirmPin:{ur:'PIN دوبارہ درج کریں',en:'Confirm PIN'},
+ enterPin:{ur:'اپنا PIN درج کریں',en:'Enter your PIN'},
+ wrongPin:{ur:'غلط PIN، دوبارہ کوشش کریں',en:'Wrong PIN, try again'},
+ pinMismatch:{ur:'PIN مماثل نہیں، دوبارہ کوشش کریں',en:'PINs do not match, try again'},
+ valAmountReq:{ur:'رقم درج کریں (صفر سے زیادہ)',en:'Enter an amount greater than zero'},
+ valNameReq:{ur:'نام درج کریں',en:'Please enter a name'},
+ numTxns:{ur:'کل لین دین',en:'Transactions'},
+ selectMonth:{ur:'مہینہ منتخب کریں',en:'Select Month'},
+ selectDate:{ur:'تاریخ منتخب کریں',en:'Select Date'},
+ incomeByCategory:{ur:'زمرہ کے حساب سے آمد',en:'Income by Category'},
+ expenseByCategory:{ur:'زمرہ کے حساب سے خرچ',en:'Expense by Category'},
+ about:{ur:'ایپ کے بارے میں',en:'About'},
+ aboutBody:{ur:'مکمل آف لائن دکان کھاتہ ایپ — تمام ڈیٹا آپ کے آلے پر محفوظ ہے۔',en:'A fully offline shop ledger app — all data stays on your device.'},
+ pinDisableConfirm:{ur:'ایپ لاک بند کریں؟',en:'Turn off app lock?'},
+ addCategory:{ur:'+ نیا زمرہ',en:'+ Add Category'},
+ incomeCats:{ur:'آمدرقم کے زمرے',en:'Income Categories'},
+ expenseCats:{ur:'خرچ کے زمرے',en:'Expense Categories'},
+ editPerson:{ur:'نام میں ترمیم',en:'Edit Person'},
+ print:{ur:'پرنٹ / محفوظ کریں',en:'Print / Save'},
+ closingBalance:{ur:'کلوزنگ بیلنس',en:'Closing Balance'},
+ opBal:{ur:'اوپننگ بیلنس',en:'Opening Balance'},
+ backToTop:{ur:'واپس',en:'Back'},
+};
+function t(k){ const l = (state.settings && state.settings.language) || 'ur'; return (I18N[k]&&I18N[k][l])||k; }
+
+/* ===================== State ===================== */
+let state = {
+  loaded:false,
+  settings:null,
+  people:[], categories:[], transactions:[],
+  screen:'dashboard',
+  locked:false,
+  activePersonId:null,
+  txnFilter:'all', txnSearch:'',
+  reportDate: new Date().toISOString().slice(0,10),
+  reportMonth: new Date().toISOString().slice(0,7),
+  pendingPinSetup:'', pinInput:'', pinStage:'set1', pinFirst:'',
+  addForm:null, // {type, editingId}
+};
+
+const DEFAULT_INCOME_CATS = [
+ {ur:'سیل',en:'Sales'},{ur:'ادائیگی وصول',en:'Payment Received'},
+ {ur:'کاہک کی ادائیگی',en:'Customer Payment'},{ur:'دیگر آمدرقم',en:'Other Income'}
+];
+const DEFAULT_EXPENSE_CATS = [
+ {ur:'خریداری',en:'Purchase'},{ur:'دکان کا کرایہ',en:'Shop Rent'},{ur:'بجلی',en:'Electricity'},
+ {ur:'تنخواہ',en:'Salary'},{ur:'ٹرانسپورٹ',en:'Transport'},{ur:'سپلائر ادائیگی',en:'Supplier Payment'},
+ {ur:'دکان کا خرچ',en:'Shop Expense'},{ur:'دیگر خرچ',en:'Other Expense'}
+];
+const AVATAR_COLORS=['#1B5E42','#C08A1E','#8E44AD','#2C82C9','#C0392B','#16A085','#D35400'];
+function avatarColor(id){ let h=0; for(const c of id) h+=c.charCodeAt(0); return AVATAR_COLORS[h%AVATAR_COLORS.length]; }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function fmt(n){ n=Number(n)||0; return n.toLocaleString('en-US',{maximumFractionDigits:0}); }
+function curSym(){ return state.settings.currency==='USD'?'$':'Rs.'; }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function nowTime(){ let d=new Date(); return d.toTimeString().slice(0,5); }
+
+/* ===================== Persistence ===================== */
+function withTimeout(promise, ms){
+  return new Promise((resolve)=>{
+    let done = false;
+    const timer = setTimeout(()=>{ if(!done){ done=true; resolve(null); } }, ms);
+    Promise.resolve(promise).then(v=>{ if(!done){ done=true; clearTimeout(timer); resolve(v); } })
+      .catch(()=>{ if(!done){ done=true; clearTimeout(timer); resolve(null); } });
+  });
+}
+async function loadAll(){
+  try{
+    const [s,p,c,tx] = await Promise.all([
+      safeGet('khata:settings'), safeGet('khata:people'), safeGet('khata:categories'), safeGet('khata:transactions')
+    ]);
+    state.settings = s ? JSON.parse(s) : null;
+    state.people = p ? JSON.parse(p) : [];
+    state.categories = c ? JSON.parse(c) : null;
+    state.transactions = tx ? JSON.parse(tx) : [];
+    if(!state.categories){
+      state.categories = [
+        ...DEFAULT_INCOME_CATS.map(n=>({id:uid(),type:'income',name_ur:n.ur,name_en:n.en})),
+        ...DEFAULT_EXPENSE_CATS.map(n=>({id:uid(),type:'expense',name_ur:n.ur,name_en:n.en})),
+      ];
+      await saveCategories();
+    }
+  }catch(e){ console.error(e); state.people=state.people||[]; state.categories=state.categories||[]; state.transactions=state.transactions||[]; }
+  state.loaded = true;
+  if(state.settings && state.settings.pinEnabled) state.locked = true;
+  if(state.settings) document.documentElement.setAttribute('data-theme', state.settings.darkMode?'dark':'light');
+  render();
+}
+async function safeGet(key){
+  try{
+    if(!window.storage || typeof window.storage.get!=='function') return null;
+    const r = await withTimeout(window.storage.get(key,false), 3000);
+    return r?r.value:null;
+  }catch(e){ return null; }
+}
+async function saveSettings(){ try{ await withTimeout(window.storage.set('khata:settings', JSON.stringify(state.settings), false), 3000); }catch(e){} }
+async function savePeople(){ try{ await withTimeout(window.storage.set('khata:people', JSON.stringify(state.people), false), 3000); }catch(e){} }
+async function saveCategories(){ try{ await withTimeout(window.storage.set('khata:categories', JSON.stringify(state.categories), false), 3000); }catch(e){} }
+async function saveTxns(){ try{ await withTimeout(window.storage.set('khata:transactions', JSON.stringify(state.transactions), false), 3000); }catch(e){} }
+
+/* ===================== Calculations ===================== */
+function shopBalance(){
+  let bal = Number(state.settings.openingBalance)||0;
+  for(const tx of state.transactions){ bal += tx.type==='income'? Number(tx.amount): -Number(tx.amount); }
+  return bal;
+}
+function personBalance(pid){
+  const p = state.people.find(x=>x.id===pid); if(!p) return 0;
+  let bal = Number(p.openingBalance)||0;
+  for(const tx of state.transactions){ if(tx.personId===pid) bal += tx.type==='income'? Number(tx.amount): -Number(tx.amount); }
+  return bal;
+}
+function personTotals(pid){
+  let rec=0,paid=0;
+  for(const tx of state.transactions){ if(tx.personId===pid){ if(tx.type==='income') rec+=Number(tx.amount); else paid+=Number(tx.amount); } }
+  return {rec,paid};
+}
+function sumRange(fromDate,toDate,personId){
+  let inc=0,exp=0,n=0;
+  for(const tx of state.transactions){
+    if(tx.date<fromDate || tx.date>toDate) continue;
+    if(personId && tx.personId!==personId) continue;
+    n++; if(tx.type==='income') inc+=Number(tx.amount); else exp+=Number(tx.amount);
+  }
+  return {inc,exp,n};
+}
+function openingBeforeDate(dateStr,personId){
+  let bal = personId? (Number((state.people.find(p=>p.id===personId)||{}).openingBalance)||0) : (Number(state.settings.openingBalance)||0);
+  for(const tx of state.transactions){
+    if(personId && tx.personId!==personId) continue;
+    if(tx.date < dateStr) bal += tx.type==='income'? Number(tx.amount): -Number(tx.amount);
+  }
+  return bal;
+}
+function catName(id){
+  const c = state.categories.find(x=>x.id===id); if(!c) return '-';
+  return state.settings.language==='ur'? c.name_ur : c.name_en;
+}
+function personName(id){
+  if(!id) return state.settings.language==='ur'?'نقد':'Cash';
+  const p = state.people.find(x=>x.id===id); return p? p.name : '-';
+}
+
+/* ===================== Toast ===================== */
+function toast(msg){
+  const el = document.createElement('div'); el.className='toast'; el.textContent=msg;
+  document.body.appendChild(el); setTimeout(()=>el.remove(),2200);
+}
+
+/* ===================== Render root ===================== */
+function render(){
+  const app = document.getElementById('app');
+  document.body.dir = (state.settings && state.settings.language==='en') ? 'ltr' : 'rtl';
+  if(!state.loaded){ app.innerHTML = centerLoading(); return; }
+  if(!state.settings){ app.innerHTML = renderOnboarding(); attachOnboarding(); return; }
+  if(state.locked){ app.innerHTML = renderLock(); attachLock(); return; }
+  app.innerHTML = renderMain();
+  attachMain();
+}
+function centerLoading(){ return `<div class="center-screen"><div class="logo-badge">₨</div><div>...</div></div>`; }
+
+/* ===================== Onboarding ===================== */
+function renderOnboarding(){
+  return `
+  <div class="screen" style="padding-top:40px;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div class="logo-badge" style="margin:0 auto 14px;">₨</div>
+      <h2 class="disp" style="margin:0 0 6px;">${t('welcomeTitle')}</h2>
+      <div style="color:var(--ink-soft);font-size:13.5px;">${t('welcomeSub')}</div>
+    </div>
+    <div class="card">
+      <div class="field"><label>${t('shopName')}</label><input id="ob-shop" placeholder="My Shop"></div>
+      <div class="field"><label>${t('ownerName')}</label><input id="ob-owner" placeholder=""></div>
+      <div class="field"><label>${t('phone')}</label><input id="ob-phone" type="tel"></div>
+      <div class="field"><label>${t('openingBalance')}</label><input id="ob-opening" type="number" value="0"></div>
+      <div class="field"><label>${t('language')}</label>
+        <select id="ob-lang"><option value="ur" selected>اردو</option><option value="en">English</option></select>
+      </div>
+      <button class="btn" id="ob-submit">${t('getStarted')}</button>
+    </div>
+  </div>`;
+}
+function attachOnboarding(){
+  document.getElementById('ob-submit').onclick = async ()=>{
+    const shop = document.getElementById('ob-shop').value.trim() || 'My Shop';
+    const owner = document.getElementById('ob-owner').value.trim();
+    const phone = document.getElementById('ob-phone').value.trim();
+    const opening = parseFloat(document.getElementById('ob-opening').value)||0;
+    const lang = document.getElementById('ob-lang').value;
+    state.settings = { shopName:shop, ownerName:owner, phone, address:'', currency:'PKR', language:lang,
+      darkMode:false, pinEnabled:false, pin:'', openingBalance:opening, autoBackup:'off' };
+    await saveSettings();
+    render();
+  };
+}
+
+/* ===================== PIN Lock ===================== */
+function renderLock(){
+  const isSetup = state.pinStage==='set1'||state.pinStage==='set2';
+  return `
+  <div class="center-screen">
+    <div class="logo-badge">₨</div>
+    <h3 class="disp">${isSetup ? (state.pinStage==='set1'?t('setupPin'):t('confirmPin')) : t('enterPin')}</h3>
+    <div class="pin-dots">${[0,1,2,3].map(i=>`<div class="pin-dot ${state.pinInput.length>i?'filled':''}"></div>`).join('')}</div>
+    <div class="pinpad">
+      ${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="pinnum" data-n="${n}">${n}</button>`).join('')}
+      <button class="pinnum" data-n="clear" style="font-size:13px;">${t('cancel')}</button>
+      <button class="pinnum" data-n="0">0</button>
+      <button class="pinnum" data-n="back">⌫</button>
+    </div>
+  </div>`;
+}
+function attachLock(){
+  document.querySelectorAll('.pinnum').forEach(b=>{
+    b.onclick = async ()=>{
+      const n = b.dataset.n;
+      if(n==='back'){ state.pinInput = state.pinInput.slice(0,-1); render(); return; }
+      if(n==='clear'){ state.pinInput=''; render(); return; }
+      if(state.pinInput.length>=4) return;
+      state.pinInput += n;
+      if(state.pinInput.length===4){
+        if(state.pinStage==='enter'){
+          if(state.pinInput===state.settings.pin){ state.locked=false; state.pinInput=''; render(); }
+          else { toast(t('wrongPin')); state.pinInput=''; render(); }
+        } else if(state.pinStage==='set1'){
+          state.pinFirst = state.pinInput; state.pinInput=''; state.pinStage='set2'; render();
+        } else if(state.pinStage==='set2'){
+          if(state.pinInput===state.pinFirst){
+            state.settings.pinEnabled=true; state.settings.pin=state.pinInput;
+            await saveSettings(); state.locked=false; state.pinInput=''; state.pinStage='enter'; toast(t('savedMsg')); render();
+          } else { toast(t('pinMismatch')); state.pinInput=''; state.pinStage='set1'; render(); }
+        }
+      } else render();
+    };
+  });
+}
+
+/* ===================== Main shell ===================== */
+function renderMain(){
+  return `
+    ${renderTopbar()}
+    <div class="screen" id="screen-content">${renderScreen()}</div>
+    ${renderFab()}
+    ${renderBottomNav()}
+  `;
+}
+function renderTopbar(){
+  const titles = {dashboard:t('dashboard'),transactions:t('transactions'),people:t('people'),reports:t('reports'),settings:t('settings'),
+    'person-detail': (state.people.find(p=>p.id===state.activePersonId)||{}).name || '', categories:t('categories'), backup:t('backup')};
+  const showBack = ['person-detail'].includes(state.screen);
+  return `<div class="topbar">
+    <div class="back-row">
+      ${showBack?`<button class="iconbtn" onclick="goScreen('people')">${state.settings.language==='en'?'←':'→'}</button>`:''}
+      <div>
+        <h1 class="disp">${titles[state.screen]||state.settings.shopName}</h1>
+        ${state.screen==='dashboard'?`<div class="sub">${state.settings.shopName}</div>`:''}
+      </div>
+    </div>
+    ${state.screen==='dashboard'?`<select class="lang-select" id="topbar-lang" onchange="changeLang(this.value)">
+      <option value="ur" ${state.settings.language==='ur'?'selected':''}>اردو</option>
+      <option value="en" ${state.settings.language==='en'?'selected':''}>English</option>
+    </select>`:''}
+  </div>`;
+}
+function renderBottomNav(){
+  const items = [
+    {id:'dashboard', ic:'🏠', label:t('dashboard')},
+    {id:'transactions', ic:'📄', label:t('transactions')},
+    {id:'people', ic:'👥', label:t('people')},
+    {id:'reports', ic:'📊', label:t('reports')},
+    {id:'settings', ic:'⚙️', label:t('settings')},
+  ];
+  return `<div class="bottomnav">
+    ${items.map(i=>`<button class="navbtn ${state.screen===i.id||(i.id==='people'&&state.screen==='person-detail')?'active':''}" onclick="goScreen('${i.id}')">
+      <span class="ic">${i.ic}</span><span>${i.label}</span></button>`).join('')}
+  </div>`;
+}
+function renderFab(){
+  if(state.screen==='people') return `<button class="fab" onclick="openPersonForm()">+</button>`;
+  if(state.screen==='person-detail') return `<button class="fab" onclick="openPersonForm('${state.activePersonId}')">✎</button>`;
+  return '';
+}
+function goScreen(s){ state.screen=s; state.activePersonId = s==='people'?null:state.activePersonId; render(); }
+function changeLang(l){ state.settings.language=l; saveSettings(); render(); }
+
+function renderScreen(){
+  switch(state.screen){
+    case 'dashboard': return renderDashboard();
+    case 'transactions': return renderTransactions();
+    case 'people': return renderPeople();
+    case 'person-detail': return renderPersonDetail();
+    case 'reports': return renderReports();
+    case 'settings': return renderSettings();
+    case 'categories': return renderCategories();
+    case 'backup': return renderBackup();
+    default: return '';
+  }
+}
+
+/* ===================== Dashboard ===================== */
+function renderDashboard(){
+  const bal = shopBalance();
+  const today = todayStr();
+  const t1 = sumRange(today,today);
+  const monthStart = today.slice(0,7)+'-01';
+  const t2 = sumRange(monthStart,today);
+  return `
+  <div class="balance-card"><div class="coin">₨</div>
+    <div class="balance-label">${t('currentBalance')}</div>
+    <div class="balance-amt">${curSym()} ${fmt(bal)}</div>
+  </div>
+  <div class="grid3">
+    <div class="stat"><div class="lbl">${t('todayIncome')}</div><div class="val up">+${fmt(t1.inc)}</div></div>
+    <div class="stat"><div class="lbl">${t('todayExpense')}</div><div class="val down">-${fmt(t1.exp)}</div></div>
+    <div class="stat"><div class="lbl">${t('todayNet')}</div><div class="val">${fmt(t1.inc-t1.exp)}</div></div>
+  </div>
+  <div class="section-title">${t('thisMonth')}</div>
+  <div class="card" style="display:flex;justify-content:space-around;text-align:center;">
+    <div><div class="p-sub">${t('income')}</div><div class="val up" style="font-weight:700;">${fmt(t2.inc)}</div></div>
+    <div><div class="p-sub">${t('expense')}</div><div class="val down" style="font-weight:700;">${fmt(t2.exp)}</div></div>
+    <div><div class="p-sub">${t('net')}</div><div class="val" style="font-weight:700;">${fmt(t2.inc-t2.exp)}</div></div>
+  </div>
+  <div class="qbtns">
+    <button class="qbtn income" onclick="openTxnForm('income')">🟢 ${t('addIncome')}</button>
+    <button class="qbtn expense" onclick="openTxnForm('expense')">🔴 ${t('addExpense')}</button>
+  </div>
+  <div class="section-title">${t('transactions')}</div>
+  ${renderTxnList(state.transactions.slice().sort((a,b)=>b.createdAt-a.createdAt).slice(0,5))}
+  `;
+}
+
+/* ===================== Transaction form ===================== */
+function openTxnForm(type, editingId){
+  let editing = null;
+  if(editingId) editing = state.transactions.find(x=>x.id===editingId);
+  state.addForm = { type: editing? editing.type : type, editingId: editingId||null };
+  showModal(renderTxnFormHtml(editing));
+  attachTxnForm(editing);
+}
+function renderTxnFormHtml(editing){
+  const type = state.addForm.type;
+  const incCats = state.categories.filter(c=>c.type==='income');
+  const expCats = state.categories.filter(c=>c.type==='expense');
+  const cats = type==='income'?incCats:expCats;
+  return `
+  <h3 class="disp">${editing? t('edit') : (type==='income'?t('addIncome'):t('addExpense'))}</h3>
+  <div class="toggle2">
+    <button class="tf-type inc ${type==='income'?'active inc':''}" data-type="income">${t('income')}</button>
+    <button class="tf-type exp ${type==='expense'?'active exp':''}" data-type="expense">${t('expense')}</button>
+  </div>
+  <div class="field"><label>${t('amount')}</label><input id="tf-amount" type="number" inputmode="decimal" value="${editing?editing.amount:''}" placeholder="0"></div>
+  <div class="field"><label>${t('person')}</label>
+    <select id="tf-person">
+      <option value="">${t('noPerson')}</option>
+      ${state.people.map(p=>`<option value="${p.id}" ${editing&&editing.personId===p.id?'selected':''}>${p.name}</option>`).join('')}
+      <option value="__new__">${t('addNewPerson')}</option>
+    </select>
+  </div>
+  <div class="field" id="tf-newperson-wrap" style="display:none;"><label>${t('name')}</label><input id="tf-newperson" placeholder=""></div>
+  <div class="field"><label>${t('category')}</label>
+    <select id="tf-category">${cats.map(c=>`<option value="${c.id}" ${editing&&editing.categoryId===c.id?'selected':''}>${state.settings.language==='ur'?c.name_ur:c.name_en}</option>`).join('')}</select>
+  </div>
+  <div class="field"><label>${t('description')}</label><textarea id="tf-desc">${editing?editing.description||'':''}</textarea></div>
+  <div class="field"><label>${t('date')}</label><input id="tf-date" type="date" value="${editing?editing.date:todayStr()}"></div>
+  <div class="field"><label>${t('time')}</label><input id="tf-time" type="time" value="${editing?editing.time:nowTime()}"></div>
+  <div class="field"><label>${t('paymentMethod')}</label>
+    <select id="tf-pay">
+      <option value="cash" ${editing&&editing.paymentMethod==='cash'?'selected':''}>${t('cash')}</option>
+      <option value="bank" ${editing&&editing.paymentMethod==='bank'?'selected':''}>${t('bank')}</option>
+      <option value="other" ${editing&&editing.paymentMethod==='other'?'selected':''}>${t('other')}</option>
+    </select>
+  </div>
+  <button class="btn" id="tf-save">${t('save')}</button>
+  <button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">${t('cancel')}</button>
+  `;
+}
+function attachTxnForm(editing){
+  document.querySelectorAll('.tf-type').forEach(b=>{
+    b.onclick=()=>{ state.addForm.type=b.dataset.type; document.querySelector('.modal').innerHTML = renderTxnFormHtml(editing); attachTxnForm(editing); };
+  });
+  const personSel = document.getElementById('tf-person');
+  personSel.onchange = ()=>{ document.getElementById('tf-newperson-wrap').style.display = personSel.value==='__new__'?'block':'none'; };
+  document.getElementById('tf-save').onclick = async ()=>{
+    const amount = parseFloat(document.getElementById('tf-amount').value);
+    if(!amount || amount<=0){ toast(t('valAmountReq')); return; }
+    let personId = personSel.value;
+    if(personId==='__new__'){
+      const nm = document.getElementById('tf-newperson').value.trim();
+      if(!nm){ toast(t('valNameReq')); return; }
+      const np = {id:uid(), name:nm, phone:'', address:'', notes:'', openingBalance:0, createdAt:Date.now()};
+      state.people.push(np); await savePeople(); personId = np.id;
+    }
+    const tx = {
+      id: editing? editing.id : uid(),
+      type: state.addForm.type,
+      amount, personId: personId||null,
+      categoryId: document.getElementById('tf-category').value,
+      description: document.getElementById('tf-desc').value.trim(),
+      date: document.getElementById('tf-date').value || todayStr(),
+      time: document.getElementById('tf-time').value || nowTime(),
+      paymentMethod: document.getElementById('tf-pay').value,
+      createdAt: editing? editing.createdAt : Date.now(),
+    };
+    if(editing){ const idx = state.transactions.findIndex(x=>x.id===editing.id); state.transactions[idx]=tx; }
+    else state.transactions.push(tx);
+    await saveTxns();
+    closeModal(); toast(t('savedMsg')); render();
+  };
+}
+
+/* ===================== Transactions list screen ===================== */
+function renderTxnList(list){
+  if(list.length===0) return `<div class="empty"><div class="ic">🧾</div>${t('noData')}</div>`;
+  return list.map(tx=>`
+    <div class="txn-item" onclick="openTxnForm('${tx.type}','${tx.id}')">
+      <div class="txn-top">
+        <div><span class="chip ${tx.type==='expense'?'exp':''}">${tx.type==='income'?t('income'):t('expense')}</span>${personName(tx.personId)}</div>
+        <div class="${tx.type==='income'?'amt-pos':'amt-neg'}">${tx.type==='income'?'+':'-'}${curSym()} ${fmt(tx.amount)}</div>
+      </div>
+      <div class="txn-meta">${tx.date} · ${tx.time} · ${catName(tx.categoryId)}${tx.description?(' · '+tx.description):''}</div>
+    </div>
+  `).join('');
+}
+function renderTransactions(){
+  let list = state.transactions.slice().sort((a,b)=>b.createdAt-a.createdAt);
+  if(state.txnFilter!=='all') list = list.filter(x=>x.type===state.txnFilter);
+  const q = state.txnSearch.trim().toLowerCase();
+  if(q) list = list.filter(x=> personName(x.personId).toLowerCase().includes(q) || String(x.amount).includes(q) || (x.description||'').toLowerCase().includes(q) || catName(x.categoryId).toLowerCase().includes(q));
+  return `
+  <div class="searchbar">🔍<input id="txn-search" placeholder="${t('searchPh')}" value="${state.txnSearch}"></div>
+  <div class="filters">
+    <div class="filter-chip ${state.txnFilter==='all'?'active':''}" onclick="setTxnFilter('all')">${t('all')}</div>
+    <div class="filter-chip ${state.txnFilter==='income'?'active':''}" onclick="setTxnFilter('income')">${t('income')}</div>
+    <div class="filter-chip ${state.txnFilter==='expense'?'active':''}" onclick="setTxnFilter('expense')">${t('expense')}</div>
+  </div>
+  ${renderTxnList(list)}
+  `;
+}
+function setTxnFilter(f){ state.txnFilter=f; render(); document.getElementById('txn-search')?.focus(); }
+function attachTxnSearch(){
+  const el = document.getElementById('txn-search');
+  if(el) el.oninput = ()=>{ state.txnSearch = el.value; renderScreenContent(); };
+}
+function renderScreenContent(){
+  const el = document.getElementById('screen-content');
+  if(el){ const scroll = el.scrollTop; el.innerHTML = renderScreen(); attachMain(true); el.scrollTop = scroll; }
+}
+
+/* ===================== People ===================== */
+function renderPeople(){
+  if(state.people.length===0) return `<div class="empty"><div class="ic">👥</div>${t('noData')}</div>`;
+  const list = state.people.slice().sort((a,b)=>a.name.localeCompare(b.name));
+  return list.map(p=>{
+    const bal = personBalance(p.id);
+    return `<div class="list-item" onclick="openPersonDetail('${p.id}')">
+      <div class="person-row">
+        <div class="avatar" style="background:${avatarColor(p.id)}">${p.name.charAt(0)}</div>
+        <div><div class="p-name">${p.name}</div><div class="p-sub">${p.phone||''}</div></div>
+      </div>
+      <div class="${bal>=0?'amt-pos':'amt-neg'}">${curSym()} ${fmt(Math.abs(bal))}</div>
+    </div>`;
+  }).join('');
+}
+function openPersonDetail(id){ state.activePersonId=id; state.screen='person-detail'; render(); }
+function renderPersonDetail(){
+  const p = state.people.find(x=>x.id===state.activePersonId); if(!p) return '';
+  const bal = personBalance(p.id); const tot = personTotals(p.id);
+  const txns = state.transactions.filter(x=>x.personId===p.id).sort((a,b)=>b.createdAt-a.createdAt);
+  return `
+  <div class="card" style="text-align:center;">
+    <div class="avatar" style="background:${avatarColor(p.id)};width:56px;height:56px;font-size:22px;margin:0 auto 8px;">${p.name.charAt(0)}</div>
+    <div class="disp" style="font-size:18px;font-weight:700;">${p.name}</div>
+    ${p.phone?`<div class="p-sub">${p.phone}</div>`:''}
+    <div class="row" style="margin-top:14px;">
+      <div style="flex:1;"><div class="p-sub">${t('totalReceived')}</div><div class="up" style="font-weight:700;">${fmt(tot.rec)}</div></div>
+      <div style="flex:1;"><div class="p-sub">${t('totalPaid')}</div><div class="down" style="font-weight:700;">${fmt(tot.paid)}</div></div>
+      <div style="flex:1;"><div class="p-sub">${t('balance')}</div><div style="font-weight:800;">${curSym()} ${fmt(bal)}</div></div>
+    </div>
+  </div>
+  <div class="row" style="margin-bottom:10px;">
+    <div class="section-title" style="margin:0;">${t('transactions')}</div>
+    <button class="btn small danger" onclick="deletePerson('${p.id}')">${t('delete')}</button>
+  </div>
+  ${renderTxnList(txns)}
+  `;
+}
+async function deletePerson(id){
+  if(!confirm(t('confirmDelete'))) return;
+  state.people = state.people.filter(x=>x.id!==id);
+  state.transactions = state.transactions.filter(x=>x.personId!==id);
+  await savePeople(); await saveTxns();
+  toast(t('deletedMsg')); state.screen='people'; render();
+}
+function openPersonForm(editId){
+  const editing = editId? state.people.find(x=>x.id===editId) : null;
+  showModal(`
+    <h3 class="disp">${editing?t('editPerson'):t('addPerson')}</h3>
+    <div class="field"><label>${t('name')}</label><input id="pf-name" value="${editing?editing.name:''}"></div>
+    <div class="field"><label>${t('phone')}</label><input id="pf-phone" type="tel" value="${editing?editing.phone||'':''}"></div>
+    <div class="field"><label>${t('address')}</label><input id="pf-address" value="${editing?editing.address||'':''}"></div>
+    <div class="field"><label>${t('notes')}</label><textarea id="pf-notes">${editing?editing.notes||'':''}</textarea></div>
+    <div class="field"><label>${t('openingBalance')}</label><input id="pf-opening" type="number" value="${editing?editing.openingBalance||0:0}"></div>
+    <button class="btn" id="pf-save">${t('save')}</button>
+    <button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">${t('cancel')}</button>
+  `);
+  document.getElementById('pf-save').onclick = async ()=>{
+    const name = document.getElementById('pf-name').value.trim();
+    if(!name){ toast(t('valNameReq')); return; }
+    const data = { name, phone:document.getElementById('pf-phone').value.trim(), address:document.getElementById('pf-address').value.trim(),
+      notes:document.getElementById('pf-notes').value.trim(), openingBalance: parseFloat(document.getElementById('pf-opening').value)||0 };
+    if(editing){ Object.assign(editing,data); }
+    else state.people.push({id:uid(),createdAt:Date.now(),...data});
+    await savePeople(); closeModal(); toast(t('savedMsg')); render();
+  };
+}
+
+/* ===================== Reports ===================== */
+function renderReports(){
+  const d = state.reportDate; const before = openingBeforeDate(d);
+  const r = sumRange(d,d); const closing = before + r.inc - r.exp;
+  const m = state.reportMonth; const mStart = m+'-01'; const mEnd = m+'-31';
+  const mBefore = openingBeforeDate(mStart); const mr = sumRange(mStart,mEnd); const mClosing = mBefore+mr.inc-mr.exp;
+  const catBreak = (type)=>{
+    const map={};
+    state.transactions.filter(x=>x.type===type && x.date>=mStart && x.date<=mEnd).forEach(x=>{ map[x.categoryId]=(map[x.categoryId]||0)+Number(x.amount); });
+    const entries = Object.entries(map).sort((a,b)=>b[1]-a[1]);
+    const max = entries.length? entries[0][1]:1;
+    return entries.map(([cid,val])=>`<div class="bar-wrap"><div style="width:80px;">${catName(cid)}</div><div class="bar-track"><div class="bar-fill" style="width:${(val/max*100)}%;background:${type==='income'?'var(--green)':'var(--red)'}"></div></div><div style="width:60px;text-align:end;">${fmt(val)}</div></div>`).join('') || `<div class="p-sub">${t('noData')}</div>`;
+  };
+  return `
+  <div class="card">
+    <div class="row"><h3 class="disp" style="margin:0;">${t('dailyReport')}</h3><input id="rep-date" type="date" value="${d}" style="width:auto;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);"></div>
+    <div class="report-row"><span>${t('opBal')}</span><span>${fmt(before)}</span></div>
+    <div class="report-row"><span>${t('income')}</span><span class="up">+${fmt(r.inc)}</span></div>
+    <div class="report-row"><span>${t('expense')}</span><span class="down">-${fmt(r.exp)}</span></div>
+    <div class="report-row"><span>${t('numTxns')}</span><span>${r.n}</span></div>
+    <div class="report-row total"><span>${t('closingBalance')}</span><span>${curSym()} ${fmt(closing)}</span></div>
+    <button class="btn small ghost" style="margin-top:10px;" onclick="printReport('daily')">🖨 ${t('print')}</button>
+  </div>
+  <div class="card">
+    <div class="row"><h3 class="disp" style="margin:0;">${t('monthlyReport')}</h3><input id="rep-month" type="month" value="${m}" style="width:auto;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);"></div>
+    <div class="report-row"><span>${t('opBal')}</span><span>${fmt(mBefore)}</span></div>
+    <div class="report-row"><span>${t('income')}</span><span class="up">+${fmt(mr.inc)}</span></div>
+    <div class="report-row"><span>${t('expense')}</span><span class="down">-${fmt(mr.exp)}</span></div>
+    <div class="report-row total"><span>${t('closingBalance')}</span><span>${curSym()} ${fmt(mClosing)}</span></div>
+    <div class="section-title">${t('incomeByCategory')}</div>${catBreak('income')}
+    <div class="section-title">${t('expenseByCategory')}</div>${catBreak('expense')}
+    <button class="btn small ghost" style="margin-top:10px;" onclick="printReport('monthly')">🖨 ${t('print')}</button>
+  </div>
+  <div class="card">
+    <h3 class="disp" style="margin-top:0;">${t('personReport')}</h3>
+    <select id="rep-person" style="margin-bottom:10px;">${state.people.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
+    <div id="rep-person-out"></div>
+  </div>
+  `;
+}
+function attachReports(){
+  const dEl = document.getElementById('rep-date'); if(dEl) dEl.onchange=()=>{ state.reportDate=dEl.value; renderScreenContent(); };
+  const mEl = document.getElementById('rep-month'); if(mEl) mEl.onchange=()=>{ state.reportMonth=mEl.value; renderScreenContent(); };
+  const pEl = document.getElementById('rep-person');
+  if(pEl){
+    const showP = ()=>{
+      const pid = pEl.value; const m = state.reportMonth; const mStart=m+'-01', mEnd=m+'-31';
+      const before = openingBeforeDate(mStart,pid); const r = sumRange(mStart,mEnd,pid);
+      document.getElementById('rep-person-out').innerHTML = `
+        <div class="report-row"><span>${t('opBal')}</span><span>${fmt(before)}</span></div>
+        <div class="report-row"><span>${t('totalReceived')}</span><span class="up">+${fmt(r.inc)}</span></div>
+        <div class="report-row"><span>${t('totalPaid')}</span><span class="down">-${fmt(r.exp)}</span></div>
+        <div class="report-row total"><span>${t('closingBalance')}</span><span>${curSym()} ${fmt(before+r.inc-r.exp)}</span></div>`;
+    };
+    pEl.onchange = showP; if(state.people.length) showP();
+  }
+}
+function loadScript(src){
+  return new Promise((resolve,reject)=>{
+    const s = document.createElement('script'); s.src=src; s.onload=resolve; s.onerror=reject; document.head.appendChild(s);
+  });
+}
+function printReport(kind){
+  const shop = state.settings.shopName; const owner = state.settings.ownerName||''; const phone = state.settings.phone||'';
+  let title, rows;
+  if(kind==='daily'){
+    const d=state.reportDate; const before=openingBeforeDate(d); const r=sumRange(d,d); const closing=before+r.inc-r.exp;
+    title = t('dailyReport')+' — '+d;
+    rows = [[t('opBal'),fmt(before)],[t('income'),'+'+fmt(r.inc)],[t('expense'),'-'+fmt(r.exp)],[t('numTxns'),r.n],[t('closingBalance'),fmt(closing)]];
+  } else {
+    const m=state.reportMonth; const mStart=m+'-01', mEnd=m+'-31'; const before=openingBeforeDate(mStart); const r=sumRange(mStart,mEnd); const closing=before+r.inc-r.exp;
+    title = t('monthlyReport')+' — '+m;
+    rows = [[t('opBal'),fmt(before)],[t('income'),'+'+fmt(r.inc)],[t('expense'),'-'+fmt(r.exp)],[t('closingBalance'),fmt(closing)]];
+  }
+  let pa = document.getElementById('print-area');
+  if(!pa){ pa = document.createElement('div'); pa.id='print-area'; document.body.appendChild(pa); }
+  pa.innerHTML = `
+    <div style="font-family:'Lora',serif;font-size:20px;font-weight:700;">${shop}</div>
+    <div style="font-size:12px;color:#555;margin-bottom:14px;">${owner} ${phone}</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:8px;border-bottom:2px solid #222;padding-bottom:6px;">${title}</div>
+    ${rows.map(r=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #ccc;font-size:13px;"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}
+    <div style="font-size:10px;color:#999;margin-top:16px;">${new Date().toLocaleString()}</div>
+  `;
+  document.body.classList.add('printing');
+  window.print();
+  setTimeout(()=>document.body.classList.remove('printing'), 500);
+}
+window.addEventListener('afterprint', ()=>document.body.classList.remove('printing'));
+
+/* ===================== Categories ===================== */
+function renderCategories(){
+  const inc = state.categories.filter(c=>c.type==='income');
+  const exp = state.categories.filter(c=>c.type==='expense');
+  const row = (c)=>`<div class="list-item"><div>${state.settings.language==='ur'?c.name_ur:c.name_en}</div>
+    <button class="btn small danger" onclick="deleteCategory('${c.id}')">${t('delete')}</button></div>`;
+  return `
+  <div class="section-title">${t('incomeCats')}</div>
+  ${inc.map(row).join('')}
+  <button class="btn ghost small" onclick="openCategoryForm('income')">${t('addCategory')}</button>
+  <div class="section-title">${t('expenseCats')}</div>
+  ${exp.map(row).join('')}
+  <button class="btn ghost small" onclick="openCategoryForm('expense')">${t('addCategory')}</button>
+  `;
+}
+function openCategoryForm(type){
+  showModal(`
+    <h3 class="disp">${t('addCategory')}</h3>
+    <div class="field"><label>${t('name')} (اردو)</label><input id="cf-ur"></div>
+    <div class="field"><label>${t('name')} (English)</label><input id="cf-en"></div>
+    <button class="btn" id="cf-save">${t('save')}</button>
+    <button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">${t('cancel')}</button>
+  `);
+  document.getElementById('cf-save').onclick = async ()=>{
+    const ur = document.getElementById('cf-ur').value.trim(); const en = document.getElementById('cf-en').value.trim();
+    if(!ur && !en){ toast(t('valNameReq')); return; }
+    state.categories.push({id:uid(),type,name_ur:ur||en,name_en:en||ur});
+    await saveCategories(); closeModal(); toast(t('savedMsg')); render();
+  };
+}
+async function deleteCategory(id){
+  if(!confirm(t('confirmDelete'))) return;
+  state.categories = state.categories.filter(x=>x.id!==id);
+  await saveCategories(); toast(t('deletedMsg')); render();
+}
+
+/* ===================== Settings ===================== */
+function renderSettings(){
+  const s = state.settings;
+  return `
+  <div class="card">
+    <div class="menu-item" onclick="editShopProfile()"><div class="menu-ic">🏪</div><div><div class="p-name">${t('shopProfile')}</div><div class="p-sub">${s.shopName}</div></div></div>
+    <div class="menu-item" onclick="goScreen('categories')"><div class="menu-ic">🏷️</div><div><div class="p-name">${t('categories')}</div></div></div>
+    <div class="menu-item" onclick="goScreen('backup')"><div class="menu-ic">💾</div><div><div class="p-name">${t('backup')}</div></div></div>
+  </div>
+  <div class="card">
+    <div class="settings-row"><div class="lbl">${t('language')}</div>
+      <select onchange="changeLang(this.value)"><option value="ur" ${s.language==='ur'?'selected':''}>اردو</option><option value="en" ${s.language==='en'?'selected':''}>English</option></select>
+    </div>
+    <div class="settings-row"><div class="lbl">${t('currency')}</div>
+      <select id="set-currency"><option value="PKR" ${s.currency==='PKR'?'selected':''}>PKR / Rs.</option><option value="USD" ${s.currency==='USD'?'selected':''}>USD / $</option></select>
+    </div>
+    <div class="settings-row"><div class="lbl">${t('darkMode')}</div><div class="switch ${s.darkMode?'on':''}" onclick="toggleDark()"><div class="knob"></div></div></div>
+    <div class="settings-row"><div class="lbl">${t('appLock')}</div><div class="switch ${s.pinEnabled?'on':''}" onclick="togglePin()"><div class="knob"></div></div></div>
+  </div>
+  <div class="card">
+    <div class="menu-item" onclick="showAbout()"><div class="menu-ic">ℹ️</div><div><div class="p-name">${t('about')}</div></div></div>
+  </div>
+  `;
+}
+function attachSettings(){
+  const cur = document.getElementById('set-currency'); if(cur) cur.onchange=async()=>{ state.settings.currency=cur.value; await saveSettings(); renderScreenContent(); };
+}
+async function toggleDark(){
+  state.settings.darkMode = !state.settings.darkMode;
+  document.documentElement.setAttribute('data-theme', state.settings.darkMode?'dark':'light');
+  await saveSettings(); render();
+}
+async function togglePin(){
+  if(state.settings.pinEnabled){
+    if(!confirm(t('pinDisableConfirm'))) return;
+    state.settings.pinEnabled=false; state.settings.pin=''; await saveSettings(); render();
+  } else {
+    state.pinStage='set1'; state.pinInput=''; state.locked=true; render();
+  }
+}
+function editShopProfile(){
+  const s = state.settings;
+  showModal(`
+    <h3 class="disp">${t('shopProfile')}</h3>
+    <div class="field"><label>${t('shopName')}</label><input id="sp-shop" value="${s.shopName}"></div>
+    <div class="field"><label>${t('ownerName')}</label><input id="sp-owner" value="${s.ownerName||''}"></div>
+    <div class="field"><label>${t('phone')}</label><input id="sp-phone" value="${s.phone||''}"></div>
+    <div class="field"><label>${t('address')}</label><input id="sp-address" value="${s.address||''}"></div>
+    <div class="field"><label>${t('openingBalance')}</label><input id="sp-opening" type="number" value="${s.openingBalance||0}"></div>
+    <button class="btn" id="sp-save">${t('save')}</button>
+    <button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">${t('cancel')}</button>
+  `);
+  document.getElementById('sp-save').onclick = async ()=>{
+    s.shopName=document.getElementById('sp-shop').value.trim()||s.shopName;
+    s.ownerName=document.getElementById('sp-owner').value.trim();
+    s.phone=document.getElementById('sp-phone').value.trim();
+    s.address=document.getElementById('sp-address').value.trim();
+    s.openingBalance=parseFloat(document.getElementById('sp-opening').value)||0;
+    await saveSettings(); closeModal(); toast(t('savedMsg')); render();
+  };
+}
+function showAbout(){
+  showModal(`<h3 class="disp">${t('about')}</h3><p style="color:var(--ink-soft);">${t('aboutBody')}</p><button class="btn ghost" onclick="closeModal()">${t('cancel')}</button>`);
+}
+
+/* ===================== Backup ===================== */
+function renderBackup(){
+  return `
+  <div class="card">
+    <button class="btn" onclick="createBackup()">💾 ${t('createBackup')}</button>
+    <label class="btn ghost" style="display:block;text-align:center;margin-top:10px;cursor:pointer;">
+      📥 ${t('restoreBackup')}<input type="file" accept=".json" style="display:none;" onchange="restoreBackup(event)">
+    </label>
+    <button class="btn ghost" style="margin-top:10px;" onclick="exportCsv()">📊 ${t('exportCsv')}</button>
+  </div>`;
+}
+function createBackup(){
+  const data = { settings:state.settings, people:state.people, categories:state.categories, transactions:state.transactions, exportedAt:new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'khata-backup-'+todayStr()+'.json'; a.click();
+  toast(t('savedMsg'));
+}
+function restoreBackup(ev){
+  const file = ev.target.files[0]; if(!file) return;
+  if(!confirm(t('confirmRestore'))) return;
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    try{
+      const data = JSON.parse(reader.result);
+      if(data.settings) state.settings = data.settings;
+      if(data.people) state.people = data.people;
+      if(data.categories) state.categories = data.categories;
+      if(data.transactions) state.transactions = data.transactions;
+      await Promise.all([saveSettings(),savePeople(),saveCategories(),saveTxns()]);
+      toast(t('savedMsg')); render();
+    }catch(e){ toast('Invalid backup file'); }
+  };
+  reader.readAsText(file);
+}
+function exportCsv(){
+  const header = ['ID','Date','Time','Person','Type','Category','Amount','PaymentMethod','Description'];
+  const rows = state.transactions.map(x=>[x.id,x.date,x.time,personName(x.personId),x.type,catName(x.categoryId),x.amount,x.paymentMethod,(x.description||'').replace(/,/g,';')]);
+  const csv = [header.join(','), ...rows.map(r=>r.join(','))].join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'transactions-'+todayStr()+'.csv'; a.click();
+}
+
+/* ===================== Modal ===================== */
+function showModal(html){
+  let bg = document.getElementById('modal-bg');
+  if(!bg){ bg = document.createElement('div'); bg.id='modal-bg'; bg.className='modal-bg'; document.body.appendChild(bg); }
+  bg.innerHTML = `<div class="modal">${html}</div>`;
+  bg.onclick = (e)=>{ if(e.target===bg) closeModal(); };
+}
+function closeModal(){ const bg = document.getElementById('modal-bg'); if(bg) bg.remove(); }
+
+/* ===================== Attach handlers per screen ===================== */
+function attachMain(skipTopbar){
+  attachTxnSearch();
+  if(state.screen==='reports') attachReports();
+  if(state.screen==='settings') attachSettings();
+}
+
+/* ===================== Init ===================== */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
+loadAll();
+// Load web fonts in the background, non-blocking — app works fine on system fonts if this fails/no internet
+try{
+  const fl = document.createElement('link'); fl.rel='stylesheet';
+  fl.href='https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Lora:ital,wght@0,500;0,700;1,500&family=Inter:wght@400;500;600;700;800&display=swap';
+  document.head.appendChild(fl);
+}catch(e){}
+setTimeout(()=>{
+  if(!state.loaded){
+    const app = document.getElementById('app');
+    app.innerHTML = '<div class="center-screen"><div class="logo-badge">₨</div><h3>Taking longer than expected…</h3><button class="btn" style="margin-top:14px;max-width:220px;" onclick="location.reload()">Reload</button></div>';
+  }
+}, 6000);
+</script>
+</body>
+</html>
